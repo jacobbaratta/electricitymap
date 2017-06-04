@@ -7,7 +7,7 @@ var BUNDLE_HASH = JSON.parse(fs.readFileSync('www/electricitymap/dist/manifest.j
 // TODO:
 // Currently, those variables are duplicated from server.js
 // We should instead have a central configuration file in the `config` folder
-var locales = ['da', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'sv'];
+var locales = ['da', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'sv', 'zh-cn', 'zh-hk', 'zh-tw'];
 var LOCALE_TO_FB_LOCALE = {
     'da': 'da_DK',
     'de': 'de_DE',
@@ -17,7 +17,10 @@ var LOCALE_TO_FB_LOCALE = {
     'it': 'it_IT',
     'nl': 'nl_NL',
     'pl': 'pl_PL',
-    'sv': 'sv_SE'
+    'sv': 'sv_SE',
+    'zh-cn': 'zh_CN',
+    'zh-hk': 'zh_HK',
+    'zh-tw': 'zh_TW'
 };
 var SUPPORTED_FB_LOCALES = [
     'da_DK',
@@ -35,7 +38,10 @@ var SUPPORTED_FB_LOCALES = [
     'nl_BE',
     'nl_NL',
     'pl_PL',
-    'sv_SE'
+    'sv_SE',
+    'zh_CN',
+    'zh_HK',
+    'zh_TW',
 ];
 
 // * i18n
@@ -53,12 +59,13 @@ locales.forEach(function(locale) {
     i18n.setLocale(locale);
     var template = ejs.compile(fs.readFileSync('../web/views/pages/index.ejs', 'utf8'));
     var html = template({
-      bundleHash: BUNDLE_HASH,
-      isCordova: true,
-      locale: locale,
-      FBLocale: LOCALE_TO_FB_LOCALE[locale],
-      supportedFBLocales: SUPPORTED_FB_LOCALES,
-      '__': i18n.__
+        bundleHash: BUNDLE_HASH,
+        isCordova: true,
+        locale: locale,
+        FBLocale: LOCALE_TO_FB_LOCALE[locale],
+        supportedLocales: locales,
+        supportedFBLocales: SUPPORTED_FB_LOCALES,
+        '__': i18n.__
     });
 
     fs.writeFileSync('www/electricitymap/index_' + locale + '.html', html);

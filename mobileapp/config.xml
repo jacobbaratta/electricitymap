@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.tmrow.electricitymap" version="1.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.tmrow.electricitymap" version="1.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Electricity Map</name>
     <description>
         Electricity Map is a live visualization of where your electricity comes from and how much CO2 was emitted to produce it.
@@ -15,67 +15,54 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-
-    <!-- Required to avoid having Facebook complain -->
     <allow-navigation href="https://www.facebook.com/v*/plugins/*" />
     <allow-navigation href="https://platform.twitter.com/*" />
-
-    <!-- For icons, use http://makeappicon.com/ -->
-
     <platform name="android">
         <preference name="CodePushDeploymentKey" value="pq5LiNRfRy4cBGU-a5Njke45jUclEJ-bjzkpG" />
         <preference name="AndroidLaunchMode" value="singleInstance" />
-
+        <preference name="SplashMaintainAspectRatio" value="true" />
+        <preference name="SplashScreenDelay" value="0" />
         <allow-intent href="market:*" />
-
-        <icon src="res/android/mipmap-ldpi/ic_launcher.png" density="ldpi" />
-        <icon src="res/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
-        <icon src="res/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
-        <icon src="res/android/mipmap-xhdpi/ic_launcher.png" density="xhdpi" />
-        <icon src="res/android/mipmap-xxhdpi/ic_launcher.png" density="xxhdpi" />
-        <icon src="res/android/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
+        <icon density="ldpi" src="res/android/mipmap-ldpi/ic_launcher.png" />
+        <icon density="mdpi" src="res/android/mipmap-mdpi/ic_launcher.png" />
+        <icon density="hdpi" src="res/android/mipmap-hdpi/ic_launcher.png" />
+        <icon density="xhdpi" src="res/android/mipmap-xhdpi/ic_launcher.png" />
+        <icon density="xxhdpi" src="res/android/mipmap-xxhdpi/ic_launcher.png" />
+        <icon density="xxxhdpi" src="res/android/mipmap-xxxhdpi/ic_launcher.png" />
     </platform>
     <platform name="ios">
         <preference name="CodePushDeploymentKey" value="4uQpHGlWRd7qOyIq-JNAhvjsYXcsEJ-bjzkpG" />
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-
-        <!-- iOS 8.0+ -->
-        <!-- iPhone 6 Plus  -->
-        <icon src="res/ios/Icon-App-60x60@3x.png" width="180" height="180" />
-        <!-- iOS 7.0+ -->
-        <!-- iPhone / iPod Touch  -->
-        <icon src="res/ios/Icon-App-60x60@1x.png" width="60" height="60" />
-        <icon src="res/ios/Icon-App-60x60@2x.png" width="120" height="120" />
-        <!-- iPad -->
-        <icon src="res/ios/Icon-App-76x76@1x.png" width="76" height="76" />
-        <icon src="res/ios/Icon-App-76x76@2x.png" width="152" height="152" />
-        <!-- Spotlight Icon -->
-        <icon src="res/ios/Icon-App-40x40@1x.png" width="40" height="40" />
-        <icon src="res/ios/Icon-App-40x40@2x.png" width="80" height="80" />
-        <!-- iOS 6.1 -->
-        <!-- iPhone / iPod Touch -->
-        <icon src="res/ios/Icon-App-57x57@1x.png" width="57" height="57" />
-        <icon src="res/ios/Icon-App-57x57@1x.png" width="114" height="114" />
-        <!-- iPad -->
-        <icon src="res/ios/Icon-App-72x72@1x.png" width="72" height="72" />
-        <icon src="res/ios/Icon-App-72x72@2x.png" width="144" height="144" />
-        <!-- iPhone Spotlight and Settings Icon -->
-        <icon src="res/ios/Icon-App-29x29@1x.png" width="29" height="29" />
-        <icon src="res/ios/Icon-App-29x29@2x.png" width="58" height="58" />
-        <!-- iPad Spotlight and Settings Icon -->
-        <icon src="res/ios/Icon-Small-50x50@1x.png" width="50" height="50" />
-        <icon src="res/ios/Icon-Small-50x50@2x.png" width="100" height="100" />
-        <!-- iPad Pro -->
-        <icon src="res/ios/Icon-App-83.5x83.5@2x.png" width="167" height="167" />
+        <splash src="res/screen/ios/Default@2x~universal~anyany.png" />
+        <icon height="180" src="res/ios/Icon-App-60x60@3x.png" width="180" />
+        <icon height="60" src="res/ios/Icon-App-60x60@1x.png" width="60" />
+        <icon height="120" src="res/ios/Icon-App-60x60@2x.png" width="120" />
+        <icon height="76" src="res/ios/Icon-App-76x76@1x.png" width="76" />
+        <icon height="152" src="res/ios/Icon-App-76x76@2x.png" width="152" />
+        <icon height="40" src="res/ios/Icon-App-40x40@1x.png" width="40" />
+        <icon height="80" src="res/ios/Icon-App-40x40@2x.png" width="80" />
+        <icon height="57" src="res/ios/Icon-App-57x57@1x.png" width="57" />
+        <icon height="114" src="res/ios/Icon-App-57x57@1x.png" width="114" />
+        <icon height="72" src="res/ios/Icon-App-72x72@1x.png" width="72" />
+        <icon height="144" src="res/ios/Icon-App-72x72@2x.png" width="144" />
+        <icon height="29" src="res/ios/Icon-App-29x29@1x.png" width="29" />
+        <icon height="58" src="res/ios/Icon-App-29x29@2x.png" width="58" />
+        <icon height="50" src="res/ios/Icon-Small-50x50@1x.png" width="50" />
+        <icon height="100" src="res/ios/Icon-Small-50x50@2x.png" width="100" />
+        <icon height="167" src="res/ios/Icon-App-83.5x83.5@2x.png" width="167" />
     </platform>
-    <plugin name="cordova-plugin-whitelist" spec="1" />
-    <plugin name="cordova-plugin-code-push" spec="~1.9.3-beta" />
-
     <universal-links>
         <host name="electricitymap.org" scheme="https" />
         <host name="electricitymap.org" scheme="http" />
         <host name="www.electricitymap.org" scheme="https" />
         <host name="www.electricitymap.org" scheme="http" />
     </universal-links>
+    <engine name="android" spec="^6.2.3" />
+    <engine name="ios" spec="^4.4.0" />
+    <plugin name="cordova-plugin-code-push" spec="^1.9.4-beta" />
+    <plugin name="cordova-plugin-globalization" spec="~1.0.6" />
+    <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
+    <plugin name="cordova-plugin-whitelist" spec="1" />
+    <plugin name="cordova-universal-links-plugin" spec="^1.2.1" />
 </widget>

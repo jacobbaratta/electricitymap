@@ -14,9 +14,9 @@
         "opensource": "öppen källkod",
         "see": "se",
         "datasources": "datakällor",
-        "contribute": "Bidra genom att <a href=\"%s\" target=\"_blank\">lägga till ditt land</a>",
+        "contribute": "Bidra genom att <a href=\"%s\" target=\"_blank\">lägga till din region</a>",
 
-        "tip": "Tips: Klicka på ett land för att börja utforska"
+        "tip": "Tips: Klicka på en region för att börja utforska"
     },
     "country-panel": {
         "source": "källa",
@@ -25,15 +25,13 @@
         "electricityprice": "Elpris",
         "electricityprice-dayahead": "nästa dag",
         "electricityproduction": "Elproduktion",
-        "showemissions": "visa utsläpp",
         "bysource": "per källa",
-        "emissions": "Utsläpp",
-        "showelectricity": "visa elproduktion",
+        "emissions": "Koldioxidutsläpp",
         "addeditsource": "<a href=\"%s\" target=\"_blank\">lägg till eller redigera källa</a>",
         "co2signal": "Vår <a href=\"http://www.co2signal.com\" target=\"blank\">CO2 Signal</a> hjälper elutrustning och elfordon att konsumera el vid rätt tid, speciellt när landsgränser passeras."
     },
     "rankings-panel": {
-        "country-ranking": "Rankning av länder",
+        "country-ranking": "Rankning",
         "show-ranking": "Visa rankning"
     },
     "country-history": {
@@ -57,10 +55,8 @@
         "carbonintensity": "Utsläpp av koldioxid",
         "crossborderexport": "Gränsöverskridande export",
         "carbonintensityexport": "Utsläpp av koldioxid för export",
-        "of": "av",
-        "ofconsumption": "av",
+
         "ofinstalled": "av installerad kapacitet",
-        "ofelectricity": "av",
         "utilizing": "Utnyttjar",
         "withcarbonintensity": "med ett utsläpp av koldioxid på"
     },

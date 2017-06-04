@@ -4,7 +4,7 @@
         "whereelectricitycomesfrom": "hvor din elektricitet kommer fra",
         "and": "og",
         "howmuchco2": "hvor meget CO2",
-        "wasemitted": "der er blevet udledt for at producere det",
+        "wasemitted": "der er blevet udledt for at producere den",
 
         "takeinaccount": "Vi medtager",
         "importexport": "import og eksport af elektricitet",
@@ -14,9 +14,9 @@
         "opensource": "Open Source",
         "see": "se",
         "datasources": "kildekode",
-        "contribute": "Bidrag ved at <a href=\"%s\" target=\"_blank\">tilføje dit land</a>",
+        "contribute": "Bidrag ved at <a href=\"%s\" target=\"_blank\">tilføje dit territorie</a>",
 
-        "tip": "Tip: Klik på et land for at udforske"
+        "tip": "Tip: Klik på et territorie for at udforske"
     },
     "country-panel": {
         "source": "kilde",
@@ -25,15 +25,13 @@
         "electricityprice": "Elpris",
         "electricityprice-dayahead": "næste-dags pris",
         "electricityproduction": "Elproduktion",
-        "showemissions": "vis CO2 udledning",
-        "bysource": "efter kilde",
-        "emissions": "Udledning",
-        "showelectricity": "vis el",
+        "bysource": "per kilde",
+        "emissions": "CO2 udledning",
         "addeditsource": "<a href=\"%s\" target=\"_blank\">Tilføj eller rediger kilde</a>",
         "co2signal": "Vores <a href=\"http://www.co2signal.com\" target=\"blank\">CO2 Signal</a> hjælper elektriske apparater og elbiler med at bruge elektricitet på rette tidspunkt, især på tværs af grænserne."
     },
     "rankings-panel": {
-        "country-ranking": "Landerangering",
+        "country-ranking": "Rangering",
         "show-ranking": "Vis rangering"
     },
     "country-history": {
@@ -57,10 +55,7 @@
         "carbonintensity": "CO2 intensitet",
         "crossborderexport": "Eksport til udlandet",
         "carbonintensityexport": "Eksport CO2 intensitet",
-        "of": "af",
-        "ofconsumption": "af",
         "ofinstalled": "af installeret kapacitet",
-        "ofelectricity": "af",
         "utilizing": "udnytter",
         "withcarbonintensity": "med en CO2 intensitet på"
     },

@@ -58,7 +58,7 @@ function CountryTable(selector, modeColor, modeOrder) {
                 return 'translate(0,' + (i * (that.ROW_HEIGHT + that.PADDING_Y)) + ')';
             });
     gNewRow.append('text')
-        .text(function(d) { return lang[d.mode] || d.mode })
+        .text(function(d) { return lang && lang[d.mode] || d.mode })
         .style('text-anchor', 'end') // right align
         .attr('transform', 'translate(' + (this.LABEL_MAX_WIDTH - 1.5 * this.PADDING_Y) + ', ' + this.TEXT_ADJUST_Y + ')');
     gNewRow.append('rect')
@@ -116,7 +116,7 @@ CountryTable.prototype.render = function(ignoreTransitions) {
     var header = d3.select('.country-table-header');
     var panel = d3.select('.left-panel-country');
     var datetime = this._data.stateDatetime || this._data.datetime;
-    panel.select('#country-flag').attr('src', flags.flagUri(this._data.countryCode, 64));
+    panel.select('#country-flag').attr('src', flags.flagUri(this._data.countryCode, 48));
     panel.select('.country-name').text(lang.zoneShortName[this._data.countryCode] || this._data.countryCode);
     panel.select('.country-last-update').text(datetime ? moment(datetime).fromNow() : '? minutes ago');
     panel.select('.country-time').text(datetime ? moment(datetime).format('LT') : '?');
@@ -148,15 +148,15 @@ CountryTable.prototype.render = function(ignoreTransitions) {
     selection.selectAll('rect.capacity,rect.production')
         .on('mouseover', function (d) {
             if (that.productionMouseOverHandler)
-                that.productionMouseOverHandler.call(this, d, that._data);
+                that.productionMouseOverHandler.call(this, d, that._data, that._displayByEmissions);
         })
         .on('mouseout', function (d) {
             if (that.productionMouseOutHandler)
-                that.productionMouseOutHandler.call(this, d, that._data);
+                that.productionMouseOutHandler.call(this, d, that._data, that._displayByEmissions);
         })
         .on('mousemove', function (d) {
             if (that.productionMouseMoveHandler)
-                that.productionMouseMoveHandler.call(this, d, that._data);
+                that.productionMouseMoveHandler.call(this, d, that._data, that._displayByEmissions);
         });
     /*selection.select('rect.production')
         .attr('fill', function (d) { return that.co2color()(d.gCo2eqPerkWh); });*/
@@ -313,18 +313,18 @@ CountryTable.prototype.render = function(ignoreTransitions) {
         })
 
     // Add event handlers
-    selection.selectAll('rect.capacity,rect.exchange')
+    gNewRow.merge(selection).selectAll('rect.capacity,rect.exchange')
         .on('mouseover', function (d) {
             if (that.exchangeMouseOverHandler)
-                that.exchangeMouseOverHandler.call(this, d, that._data);
+                that.exchangeMouseOverHandler.call(this, d, that._data, that._displayByEmissions);
         })
         .on('mouseout', function (d) {
             if (that.exchangeMouseOutHandler)
-                that.exchangeMouseOutHandler.call(this, d, that._data);
+                that.exchangeMouseOutHandler.call(this, d, that._data, that._displayByEmissions);
         })
         .on('mousemove', function (d) {
             if (that.exchangeMouseMoveHandler)
-                that.exchangeMouseMoveHandler.call(this, d, that._data);
+                that.exchangeMouseMoveHandler.call(this, d, that._data, that._displayByEmissions);
         });
 
     gNewRow.merge(selection).select('text')

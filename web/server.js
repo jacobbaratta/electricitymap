@@ -37,9 +37,11 @@ app.use(express.static(STATIC_PATH, {etag: true, maxAge: isProduction ? '24h': '
 app.set('view engine', 'ejs');
 
 // * i18n
+var locales = ['da', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'sv', 'zh-cn', 'zh-hk', 'zh-tw'];
 i18n.configure({
     // where to store json files - defaults to './locales' relative to modules directory
-    locales: ['da', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'sv'],
+    // note: detected locales are always lowercase
+    locales: locales,
     directory: __dirname + '/locales',
     defaultLocale: 'en',
     queryParameter: 'lang',
@@ -56,7 +58,10 @@ var LOCALE_TO_FB_LOCALE = {
     'it': 'it_IT',
     'nl': 'nl_NL',
     'pl': 'pl_PL',
-    'sv': 'sv_SE'
+    'sv': 'sv_SE',
+    'zh-cn': 'zh_CN',
+    'zh-hk': 'zh_HK',
+    'zh-tw': 'zh_TW'
 };
 // Populate using
 // https://www.facebook.com/translations/FacebookLocales.xml |grep 'en_'
@@ -78,7 +83,10 @@ var SUPPORTED_FB_LOCALES = [
     'nl_BE',
     'nl_NL',
     'pl_PL',
-    'sv_SE'
+    'sv_SE',
+    'zh_CN',
+    'zh_HK',
+    'zh_TW'
 ];
 
 // * Long-term caching
@@ -104,12 +112,20 @@ app.get('/', function(req, res) {
     // On electricitymap.tmrow.co,
     // redirect everyone except the Facebook crawler,
     // else, we will lose all likes
-    var isSubDomain = req.get('host').indexOf('electricitymap.tmrow.co') != -1;
+    var isSubDomain = req.get('host').indexOf('electricitymap.tmrow') != -1;
     var isNonWWW = req.get('host') === 'electricitymap.org';
     var isStaging = req.get('host') === 'staging.electricitymap.org';
+    var isHTTPS = req.secure;
+    var isLocalhost = req.hostname == 'localhost'; // hostname is without port
+
+    // Redirect all non-facebook, non-staging, non-(www.* or *.tmrow.co)
     if (!isStaging && (isNonWWW || isSubDomain) && (req.headers['user-agent'] || '').indexOf('facebookexternalhit') == -1) {
-        // Redirect all non-facebook or non-staging
-        res.redirect(301, 'https://www.electricitymap.org' + req.path);
+        res.redirect(301, 'https://www.electricitymap.org' + req.originalUrl);
+    // Redirect all non-HTTPS and non localhost
+    // Warning: this can't happen here because Cloudfare is the HTTPS proxy.
+    // Node only receives HTTP traffic.
+    } else if (false && !isHTTPS && !isLocalhost) {
+        res.redirect(301, 'https://www.electricitymap.org' + req.originalUrl);
     } else {
         // Set locale if facebook requests it
         if (req.query.fb_locale) {
@@ -118,19 +134,21 @@ app.get('/', function(req, res) {
             lr = req.query.fb_locale.split('_', 2);
             res.setLocale(lr[0]);
         }
+        var locale = res.locale;
         res.render('pages/index', {
             bundleHash: BUNDLE_HASH,
-            locale: res.locale,
-            FBLocale: LOCALE_TO_FB_LOCALE[res.locale],
+            locale: locale,
+            supportedLocales: locales,
+            FBLocale: LOCALE_TO_FB_LOCALE[locale],
             supportedFBLocales: SUPPORTED_FB_LOCALES
         });
     }
 });
 app.get('/v1/*', function(req, res) {
-  return res.redirect(301, 'https://api.electricitymap.org' + req.path);
+  return res.redirect(301, 'https://api.electricitymap.org' + req.originalUrl);
 });
 app.get('/v2/*', function(req, res) {
-  return res.redirect(301, 'https://api.electricitymap.org' + req.path);
+  return res.redirect(301, 'https://api.electricitymap.org' + req.originalUrl);
 });
 
 // Start the application

@@ -14,9 +14,9 @@
         "opensource": "Open Source",
         "see": "see",
         "datasources": "data sources",
-        "contribute": "Contribute by <a href=\"%s\" target=\"_blank\">adding your country</a>",
+        "contribute": "Contribute by <a href=\"%s\" target=\"_blank\">adding your territory</a>",
 
-        "tip": "Tip: Click on a country to start exploring"
+        "tip": "Tip: Click on a territory to start exploring"
     },
     "country-panel": {
         "source": "source",
@@ -25,15 +25,13 @@
         "electricityprice": "Electricity Price",
         "electricityprice-dayahead": "day-ahead",
         "electricityproduction": "Electricity production",
-        "showemissions": "show emissions",
         "bysource": "by source",
-        "emissions": "Emissions",
-        "showelectricity": "show electricity",
+        "emissions": "Carbon emissions",
         "addeditsource": "<a href=\"%s\" target=\"_blank\">add or edit source</a>",
         "co2signal": "Our <a href=\"http://www.co2signal.com\" target=\"blank\">CO2 Signal</a> helps devices and electric vehicles consume electricity at the right time, especially when crossing borders."
     },
     "rankings-panel": {
-        "country-ranking": "Country Ranking",
+        "country-ranking": "Ranking",
         "show-ranking": "Show ranking"
     },
     "country-history": {
@@ -57,10 +55,8 @@
         "carbonintensity": "Carbon intensity",
         "crossborderexport": "Cross-border export",
         "carbonintensityexport": "Carbon intensity of export",
-        "of": "of",
-        "ofconsumption": "of",
+
         "ofinstalled": "of installed capacity",
-        "ofelectricity": "of",
         "utilizing": "utilizing",
         "withcarbonintensity": "with a carbon intensity of"
     },

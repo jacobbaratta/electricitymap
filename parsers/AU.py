@@ -5,6 +5,7 @@ import requests
 
 import json
 import pandas as pd
+import math
 
 AMEO_CATEGORY_DICTIONARY = {
     'Bagasse': 'biomass',
@@ -16,7 +17,9 @@ AMEO_CATEGORY_DICTIONARY = {
     'gas': 'gas',
     'Macadamia Nut Shells': 'biomass',
     'hydro': 'hydro',
+    'Hydro': 'hydro',
     'Kerosene': 'oil',
+    'Landfill / Biogas': 'biomass',
     'Landfill / Biogass': 'biomass',
     'Landfill Gas': 'biomass',
     'Landfill Methane / Landfill Gas': 'biomass',
@@ -37,15 +40,18 @@ AMEO_CATEGORY_DICTIONARY = {
 
 AMEO_LOCATION_DICTIONARY = {
   'Hallett Power Station': 'AUS-SA',
-  'West Nowra Landfill Gas Power Generation Facility': 'AUS-NSW',
   'Somerton Power Station': 'AUS-VIC',
+  'AGL SITA Landfill1 Kemps Creek': 'AUS-NSW',
   'Angaston Power Station': 'AUS-SA',
+  'Ararat Wind Farm': 'AUS-VIC',
   'Awaba Power Station': 'AUS-NSW',
   'Bald Hills Wind Farm': 'AUS-VIC',
-  'Bankstown Sports Club Plant Units ': 'AUS-NSW',
+  'Bankstown Sports Club Plant Units': 'AUS-NSW',
   'Banimboola Power Station': 'AUS-VIC',
   'Barcaldine Power Station': 'AUS-QLD',
+  'Barcaldine Solar Farm': 'AUS-QLD',
   'Barron Gorge Power Station': 'AUS-QLD',
+  'Basslink HVDC Link': None,
   'Bastyan Power Station': 'AUS-TAS',
   'Ballarat Base Hospital Plant': 'AUS-VIC',
   'Bell Bay Three Power Station': 'AUS-TAS',
@@ -57,7 +63,7 @@ AMEO_LOCATION_DICTIONARY = {
   'Boco Rock Wind Farm': 'AUS-NSW',
   'SA Water Bolivar Waste Water Treatment (WWT) Plant': 'AUS-SA',
   'Browns Plains Land Fill Gas Power Station': 'AUS-QLD',
-  'Braemar Power Station ': 'AUS-QLD',
+  'Braemar Power Station': 'AUS-QLD',
   'Braemar 2 Power Station': 'AUS-QLD',
   'Broadmeadows Landfill Gas Power Station': 'AUS-VIC',
   'Broken Hill Solar Plant': 'AUS-NSW',
@@ -93,6 +99,7 @@ AMEO_LOCATION_DICTIONARY = {
   'Devils Gate Power Station': 'AUS-TAS',
   'Dry Creek Gas Turbine Station': 'AUS-SA',
   'Eastern Creek Power Station': 'AUS-NSW',
+  'Eildon Pondage Hydro Power Station': 'AUS-VIC',
   'Eildon Power Station': 'AUS-VIC',
   'Eraring Power Station': 'AUS-NSW',
   'Fisher Power Station': 'AUS-TAS',
@@ -111,11 +118,12 @@ AMEO_LOCATION_DICTIONARY = {
   'Hallett 1 Wind Farm': 'AUS-SA',
   'Hallett 2 Wind Farm': 'AUS-SA',
   'Hepburn Wind Farm': 'AUS-VIC',
+  'Hornsdale Wind Farm': 'AUS-SA',
+  'Hornsdale Wind Farm 2': 'AUS-SA',
   'Hunter Economic Zone': 'AUS-NSW',
   'Highbury Landfill Gas Power Station Unit 1': 'AUS-SA',
-  'South East Water - Hallam Hydro Plant': 'AUS-VIC',
   'Hume Power Station': 'AUS-NSW',
-  'Hunter Valley Gas Turbine ': 'AUS-NSW',
+  'Hunter Valley Gas Turbine': 'AUS-NSW',
   'Hazelwood Power Station': None, # Closed
   'ISIS Central Sugar Mill Co-generation Plant': 'AUS-QLD',
   'Invicta Sugar Mill': 'AUS-QLD',
@@ -123,7 +131,7 @@ AMEO_LOCATION_DICTIONARY = {
   'John Butters Power Station': 'AUS-TAS',
   'Jeeralang "A" Power Station': 'AUS-VIC',
   'Jeeralang "B" Power Station': 'AUS-VIC',
-  'Jindabyne Small Hydro Power Station ': 'AUS-NSW',
+  'Jindabyne Small Hydro Power Station': 'AUS-NSW',
   'Jounama Small Hydro Power Station': 'AUS-NSW',
   'Kareeya Power Station': 'AUS-QLD',
   'Keepit Power Station': 'AUS-NSW',
@@ -146,11 +154,11 @@ AMEO_LOCATION_DICTIONARY = {
   'Macarthur Wind Farm': 'AUS-VIC',
   'Mackay Gas Turbine': 'AUS-QLD',
   'Mackintosh Power Station': 'AUS-TAS',
-  'Moranbah North Power Station': 'AUS-QLD',
+  'Moranbah North Power Station, Grosvenor 1 Waste Coal Mine Gas Power Station': 'AUS-QLD',
   'Bogong / Mckay Power Station': 'AUS-VIC',
   'Meadowbank Diesel Generation': 'AUS-TAS',
   'Meadowbank Power Station': 'AUS-TAS',
-  'Mt Mercer Windf Farm': 'AUS-VIC',
+  'Mt Mercer Wind Farm': 'AUS-VIC',
   'Midlands Power Station': 'AUS-TAS',
   'Mintaro Gas Turbine Station': 'AUS-SA',
   'Mortons Lane Wind Farm': 'AUS-VIC',
@@ -162,10 +170,11 @@ AMEO_LOCATION_DICTIONARY = {
   'Millmerran Power Plant': 'AUS-QLD',
   'Mt Stuart Power Station': 'AUS-QLD',
   'Mt Millar Wind Farm': 'AUS-SA',
+  'Mugga Lane Solar Park': 'AUS-NSW',
   'Murray 1 Power Station, Murray 2 Power Station': 'AUS-NSW',
   'Musselroe Wind Farm': 'AUS-TAS',
   'North Brown Hill Wind Farm': 'AUS-SA',
-  'Nine Network Willoughby Plant ': 'AUS-NSW',
+  'Nine Network Willoughby Plant': 'AUS-NSW',
   'Newport Power Station': 'AUS-VIC',
   'Northern Power Station': None, # Closed
   'Nyngan Solar Plant': 'AUS-NSW',
@@ -197,11 +206,13 @@ AMEO_LOCATION_DICTIONARY = {
   'Royalla Solar Farm': 'AUS-NSW',
   'Rocky Point Cogeneration Plant': 'AUS-QLD',
   'Shepparton Wastewater Treatment Facility': 'AUS-VIC',
+  'Bendeela / Kangaroo Valley Power Station': 'AUS-NSW',
   'Bendeela / Kangaroo Valley Pumps': 'AUS-NSW',
   'Smithfield Energy Facility': 'AUS-NSW',
+  'South East Water - Hallam Hydro Plant': 'AUS-VIC',
   'Snowtown Wind Farm Stage 2 North': 'AUS-SA',
   'Snowtown South Wind Farm': 'AUS-SA',
-  'Snowtown Wind Farm Units 1 And 47': 'AUS-SA',
+  'Snowtown Wind Farm Units 1 to 47': 'AUS-SA',
   'Snuggery Power Station': 'AUS-SA',
   'Stanwell Power Station': 'AUS-QLD',
   'Starfish Hill Wind Farm': 'AUS-SA',
@@ -217,7 +228,7 @@ AMEO_LOCATION_DICTIONARY = {
   'Tatiara Bordertown Plant': 'AUS-SA',
   'Tatura Biomass Generator': 'AUS-VIC',
   'Tea Tree Gully Landfill Gas Power Station Unit 1': 'AUS-SA',
-  'Teralba Power Station ': 'AUS-NSW',
+  'Teralba Power Station': 'AUS-NSW',
   'Terminal Storage Mini Hydro Power Station': 'AUS-SA',
   'Taralgon Network Support Station': 'AUS-VIC',
   'The Drop Hydro Unit 1': 'AUS-NSW',
@@ -233,7 +244,7 @@ AMEO_LOCATION_DICTIONARY = {
   'Tamar Valley Combined Cycle Power Station': 'AUS-TAS',
   'Tamar Valley Peaking  Power Station': 'AUS-TAS',
   'Tumut 1 Power Station, Tumut 2 Power Station': 'AUS-NSW',
-  'Uranquinty Power Station ': 'AUS-NSW',
+  'Uranquinty Power Station': 'AUS-NSW',
   'Vales Point "B" Power Station': 'AUS-NSW',
   'Valley Power Peaking Facility': 'AUS-VIC',
   'Wivenhoe Power Station': 'AUS-NSW',
@@ -250,6 +261,7 @@ AMEO_LOCATION_DICTIONARY = {
   'Wingfield 1 Landfill Gas Power Station Units 1-4': 'AUS-SA',
   'Wingfield 2 Landfill Gas Power Station Units 1-4': 'AUS-SA',
   'West Kiewa Power Station': 'AUS-VIC',
+  'West Nowra Landfill Gas Power Generation Facility': 'AUS-NSW',
   'Wollert Renewable Energy Facility': 'AUS-SA',
   'Wonthaggi Wind Farm': 'AUS-VIC',
   'Woodlawn Wind Farm':  'AUS-NSW',
@@ -260,7 +272,7 @@ AMEO_LOCATION_DICTIONARY = {
   'Wyangala B Power Station': 'AUS-NSW',
   'Wyndham Waste Disposal Facility': 'AUS-VIC',
   'Townsville Gas Turbine': 'AUS-QLD',
-  'Yambuk Wind Farm ': 'AUS-VIC',
+  'Yambuk Wind Farm': 'AUS-VIC',
   'Yarwun Power Station': 'AUS-QLD',
   'Yallourn W Power Station': 'AUS-VIC',
 }
@@ -309,9 +321,16 @@ def fetch_production(country_code=None, session=None):
     df = pd.read_csv(url)
     data = {
         'countryCode': country_code,
-        'capacity': {},
-        'production': {
+        'capacity': {
+            'coal': 0,
             'geothermal': 0,
+            'hydro': 0,
+            'nuclear': 0,
+        },
+        'production': {
+            'coal': 0,
+            'geothermal': 0,
+            'hydro': 0,
             'nuclear': 0
         },
         'storage': {},
@@ -341,7 +360,10 @@ def fetch_production(country_code=None, session=None):
 
         key = AMEO_CATEGORY_DICTIONARY.get(fuelsource, None) or \
             AMEO_STATION_DICTIONARY.get(station)
-        value = float(row['Current Output (MW)']) if row['Current Output (MW)'] != '-' else 0.0
+        if row['Current Output (MW)'] != '-' and not math.isnan(row['Current Output (MW)']):
+            value = float(row['Current Output (MW)'])
+        else:
+            value = 0.0
 
         # Check for negativity, but not too much
         if value < -1:
@@ -357,7 +379,11 @@ def fetch_production(country_code=None, session=None):
         data['capacity'][key] = max(data['capacity'][key], 0)
         
         # Parse the datetime and return a python datetime object
-        datetime = arrow.get(row['Most Recent Output Time (AEST)']).datetime
+        datetime = None
+        try:
+            datetime = arrow.get(row['Most Recent Output Time (AEST)']).datetime
+        except:
+            continue
         # TODO: We should check it's not too old..
         if not 'datetime' in data:
             data['datetime'] = datetime
@@ -489,13 +515,21 @@ def fetch_price(country_code=None, session=None):
 if __name__ == '__main__':
     """Main method, never used by the Electricity Map backend, but handy for testing."""
 
+    print 'fetch_production("AUS-NSW") ->'
+    print fetch_production('AUS-NSW')
+    print 'fetch_production("AUS-QLD") ->'
+    print fetch_production('AUS-QLD')
+    print 'fetch_production("AUS-SA") ->'
+    print fetch_production('AUS-SA')
+    print 'fetch_production("AUS-TAS") ->'
+    print fetch_production('AUS-TAS')
     print 'fetch_production("AUS-VIC") ->'
     print fetch_production('AUS-VIC')
-    print "fetch_exchange('AUS-NSW', 'AUS-QLD') ->"
-    print fetch_exchange('AUS-NSW', 'AUS-QLD')
-    print "fetch_exchange('AUS-NSW', 'AUS-VIC') ->"
-    print fetch_exchange('AUS-NSW', 'AUS-VIC')
-    print "fetch_exchange('AUS-VIC', 'AUS-SA') ->"
-    print fetch_exchange('AUS-VIC', 'AUS-SA')
-    print "fetch_exchange('AUS-VIC', 'AUS-TAS') ->"
-    print fetch_exchange('AUS-VIC', 'AUS-TAS')
+    # print "fetch_exchange('AUS-NSW', 'AUS-QLD') ->"
+    # print fetch_exchange('AUS-NSW', 'AUS-QLD')
+    # print "fetch_exchange('AUS-NSW', 'AUS-VIC') ->"
+    # print fetch_exchange('AUS-NSW', 'AUS-VIC')
+    # print "fetch_exchange('AUS-VIC', 'AUS-SA') ->"
+    # print fetch_exchange('AUS-VIC', 'AUS-SA')
+    # print "fetch_exchange('AUS-VIC', 'AUS-TAS') ->"
+    # print fetch_exchange('AUS-VIC', 'AUS-TAS')
