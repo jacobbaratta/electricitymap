@@ -1,4 +1,4 @@
-var isProduction = process.env.ENV === 'production';
+var isProduction = process.env.NODE_ENV === 'production';
 
 // * Opbeat (must be the first thing started)
 if (isProduction) {
@@ -11,13 +11,16 @@ if (isProduction) {
 }
 
 // Modules
-var async = require('async');
 var compression = require('compression');
 var d3 = require('d3');
 var express = require('express');
 var fs = require('fs');
 var http = require('http');
 var i18n = require('i18n');
+var geoip = require('geoip-lite');
+
+// Custom module
+var translation = require(__dirname + '/app/translation');
 
 var app = express();
 var server = http.Server(app);
@@ -37,7 +40,7 @@ app.use(express.static(STATIC_PATH, {etag: true, maxAge: isProduction ? '24h': '
 app.set('view engine', 'ejs');
 
 // * i18n
-var locales = ['da', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'sv', 'zh-cn', 'zh-hk', 'zh-tw'];
+var locales = ['ar', 'da', 'de', 'en', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt-br', 'sv', 'zh-cn', 'zh-hk', 'zh-tw'];
 i18n.configure({
     // where to store json files - defaults to './locales' relative to modules directory
     // note: detected locales are always lowercase
@@ -46,17 +49,20 @@ i18n.configure({
     defaultLocale: 'en',
     queryParameter: 'lang',
     objectNotation: true,
-    updateFiles: false // whether to write new locale information to disk - defaults to true
+    updateFiles: false, // whether to write new locale information to disk
 });
 app.use(i18n.init);
 var LOCALE_TO_FB_LOCALE = {
+    'ar': 'ar_AR',
     'da': 'da_DK',
     'de': 'de_DE',
     'en': 'en_US',
     'es': 'es_ES',
     'fr': 'fr_FR',
     'it': 'it_IT',
+    'ja': 'ja_JP',
     'nl': 'nl_NL',
+    'pt-br': 'pt_BR',
     'pl': 'pl_PL',
     'sv': 'sv_SE',
     'zh-cn': 'zh_CN',
@@ -68,6 +74,7 @@ var LOCALE_TO_FB_LOCALE = {
 // and re-crawl using
 // http POST https://graph.facebook.com\?id\=https://www.electricitymap.org\&amp\;scrape\=true\&amp\;locale\=\en_US,fr_FR,it_IT.......
 var SUPPORTED_FB_LOCALES = [
+    'ar_AR',
     'da_DK',
     'de_DE',
     'es_ES',
@@ -80,9 +87,11 @@ var SUPPORTED_FB_LOCALES = [
     'fr_CA',
     'fr_FR',
     'it_IT',
+    'ja_JP',
     'nl_BE',
     'nl_NL',
     'pl_PL',
+    'pt_BR',
     'sv_SE',
     'zh_CN',
     'zh_HK',
@@ -90,8 +99,21 @@ var SUPPORTED_FB_LOCALES = [
 ];
 
 // * Long-term caching
-var BUNDLE_HASH = !isProduction ? 'dev' :
-    JSON.parse(fs.readFileSync(STATIC_PATH + '/dist/manifest.json')).hash;
+function getHash(key, ext) {
+    var filename;
+    if (typeof obj.assetsByChunkName[key] == 'string') {
+        filename = obj.assetsByChunkName[key];
+    } else {
+        // assume list
+        filename = obj.assetsByChunkName[key]
+            .filter((d) => d.match(new RegExp('\.' + ext + '$')))[0]
+    }
+    return filename.replace('.' + ext, '').replace(key + '.', '');
+}
+var obj = JSON.parse(fs.readFileSync(STATIC_PATH + '/dist/manifest.json'));
+var BUNDLE_HASH = getHash('bundle', 'js');
+var VENDOR_HASH = getHash('vendor', 'js');
+var STYLES_HASH = getHash('styles', 'css');
 
 // * Opbeat
 if (isProduction)
@@ -117,6 +139,7 @@ app.get('/', function(req, res) {
     var isStaging = req.get('host') === 'staging.electricitymap.org';
     var isHTTPS = req.secure;
     var isLocalhost = req.hostname == 'localhost'; // hostname is without port
+    var ip = req.headers['cf-connecting-ip'] || req.ip;
 
     // Redirect all non-facebook, non-staging, non-(www.* or *.tmrow.co)
     if (!isStaging && (isNonWWW || isSubDomain) && (req.headers['user-agent'] || '').indexOf('facebookexternalhit') == -1) {
@@ -135,12 +158,34 @@ app.get('/', function(req, res) {
             res.setLocale(lr[0]);
         }
         var locale = res.locale;
+        var fullUrl = 'https://www.electricitymap.org' + req.originalUrl;
         res.render('pages/index', {
+            alternateUrls: locales.map(function(l) {
+                if (fullUrl.indexOf('lang') != -1) {
+                    return fullUrl.replace('lang=' + req.query.lang, 'lang=' + l)
+                } else {
+                    if (Object.keys(req.query).length) {
+                        return fullUrl + '&lang=' + l;
+                    } else {
+                        return fullUrl.replace('?', '') + '?lang=' + l;
+                    }
+                }
+            }),
             bundleHash: BUNDLE_HASH,
+            vendorHash: VENDOR_HASH,
+            stylesHash: STYLES_HASH,
+            fullUrl: fullUrl,
             locale: locale,
             supportedLocales: locales,
             FBLocale: LOCALE_TO_FB_LOCALE[locale],
-            supportedFBLocales: SUPPORTED_FB_LOCALES
+            supportedFBLocales: SUPPORTED_FB_LOCALES,
+            geo: geoip.lookup(ip),
+            '__': function() {
+                var argsArray = Array.prototype.slice.call(arguments);
+                // Prepend the first argument which is the locale
+                argsArray.unshift(locale);
+                return translation.translateWithLocale.apply(null, argsArray);
+            }
         });
     }
 });

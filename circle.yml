@@ -10,19 +10,25 @@ stages:
         command: |
           docker --version
           docker-compose --version
+      - restore_cache:
+          key: pip-{{ .Branch }}-{{ checksum "parsers/requirements.txt" }}
       - type: shell
         name: Lint
         command: |
           set -exu
           pip install pylint
-          sudo apt-get install libxml2-dev libxslt1-dev python-dev
+          sudo apt-get install libxml2-dev
           pip install -r parsers/requirements.txt
           pylint -E parsers/*.py
+          python -m unittest discover parsers/test
+      - save_cache:
+          key: pip-{{ .Branch }}-{{ checksum "parsers/requirements.txt" }}
+          paths:
+            - "~/.cache/pip"
       - type: shell
         name: Build
         command: |
           set -exu
-          touch secrets.env
           docker-compose build
           docker-compose run web npm run build-release
       - type: shell

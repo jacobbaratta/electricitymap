@@ -1,4 +1,4 @@
-FROM node:6.9.4
+FROM node:8.5.0
 WORKDIR /home/web
 
 ADD web/package.json /home/web/package.json
@@ -7,6 +7,7 @@ RUN npm install
 ADD web /home/web
 ADD config /home/config
 
+ARG ELECTRICITYMAP_PUBLIC_TOKEN
 RUN npm run build-release
 
 EXPOSE 8000

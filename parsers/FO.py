@@ -14,6 +14,10 @@ MAP_GENERATION = {
 def getDataKey(tag):
     return MAP_GENERATION.get(tag, None)
 
+def validate_datapoint(d):
+    if d['production'].get('oil', None) is None: return None
+    else: return d
+
 def fetch_production(country_code='FO', session=None):
     r = session or requests.session()
     url = 'https://w3.sev.fo/hagtol/xml/xkiefjSDKFjeijgjdkjf3847tgfjlkfdgnlsnfvm.xml'
@@ -57,6 +61,13 @@ def fetch_production(country_code='FO', session=None):
             # print 'Unhandled key %s' % item.tag
             pass
 
+    # At least 10MW should be produced
+    if sum([v for k, v in data['production'].iteritems()]) < 10: return None
+    # The hydro key should be defined
+    if data['production'].get('hydro', None) is None: return None
+
     return data
 
-print fetch_production()
+
+if __name__ == '__main__':
+    print fetch_production()
