@@ -1,4 +1,5 @@
-FROM node:8.5.0
+FROM python:3.6
 WORKDIR /home
-EXPOSE 9000
-RUN npm install http-server -g
+EXPOSE 8000
+ADD server.py server.py
+CMD cd public && python ../server.py

@@ -25,6 +25,10 @@ var defaultCo2eqFootprint = { // in gCo2eq/kWh
       'value': 24,
       'source': defaultCo2eqSource
     },
+    'battery discharge': { // This applies to discharge only
+      'value': 0,
+      'source': 'TODO'
+    },
     'nuclear': {
       'value': 12,
       'source': defaultCo2eqSource
@@ -38,7 +42,7 @@ var defaultCo2eqFootprint = { // in gCo2eq/kWh
       'source': defaultCo2eqSource
     },
     'wind': {
-      'value': 12,
+      'value': 11,
       'source': defaultCo2eqSource
     },
     'geothermal': {
@@ -73,9 +77,6 @@ var countryCo2eqFootprint = {
     'FI': function (productionMode) {
         return (productionMode == 'unknown' || productionMode == 'other') ? {value: 700, source: null} : null;
     },
-    'GB': function (productionMode) {
-        return (productionMode == 'unknown' || productionMode == 'other') ? {value: 300, source: null} : null;
-    },
     'NO': function (productionMode) {
         if (productionMode == 'hydro') {
             // Source: Ostford Research (2015) "The inventory and life cycle data for Norwegian hydroelectricity"
@@ -85,7 +86,7 @@ var countryCo2eqFootprint = {
         };
     },
     'SE': function (productionMode) {
-        return (productionMode == 'unknown' || productionMode == 'other') ? {value: 700, source: null} : null;
+        return (productionMode == 'unknown' || productionMode == 'other') ? {value: 362, source: 'assumes 72% biomass, 28% conventional thermal'} : null;
     }
 };
 

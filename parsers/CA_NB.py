@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # The arrow library is used to handle datetimes consistently with other parsers
 import arrow
 
@@ -82,9 +84,9 @@ def fetch_production(country_code='CA-NB', session=None):
     # are exchanges - positive for exports, negative for imports
     # Electricity generated in NB is then 'NB Demand' plus all the others
 
-    generated = (flows['NB Demand'] + flows['EMEC'] + flows['ISO-NE']
-                 + flows['MPS'] + flows['NOVA SCOTIA'] + flows['PEI']
-                 + flows['QUEBEC'])
+    generated = (flows['NB Demand'] + flows['EMEC'] + flows['ISO-NE'] +
+                 flows['MPS'] + flows['NOVA SCOTIA'] + flows['PEI'] +
+                 flows['QUEBEC'])
 
     data = {
         'datetime': arrow.utcnow().floor('minute').datetime,
@@ -127,10 +129,10 @@ def fetch_exchange(country_code1, country_code2, session=None):
 
     if sorted_country_codes == 'CA-NB->CA-QC':
         value = flows['QUEBEC']
-    elif sorted_country_codes == 'CA-NB->US':
+    elif sorted_country_codes == 'CA-NB->US-NEISO':
         # all of these exports are to Maine
         # (see https://www.nbpower.com/en/about-us/our-energy/system-map/),
-        # but US is not currently broken down by state
+        # currently this is mapped to ISO-NE
         value = flows['EMEC'] + flows['ISO-NE'] + flows['MPS']
     elif sorted_country_codes == 'CA-NB->CA-NS':
         value = flows['NOVA SCOTIA']

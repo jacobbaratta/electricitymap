@@ -85,13 +85,15 @@ co2Sub = function(str) {
         <script defer src="dist/vendor.<%= vendorHash %>.js"></script>
         <script defer src="dist/bundle.<%= bundleHash %>.js"></script>
 
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-79729918-1"></script>
+
         <!-- Set Global Variables -->
         <script>
             var bundleHash = '<%= bundleHash %>';
             var locale = '<%= locale %>';
             var FBLocale = '<%= FBLocale %>';
             var isCordova = <%= (typeof isCordova !== 'undefined' && isCordova) %>;
-            var geo = <%- (typeof geo !== 'undefined' && JSON.stringify(geo) || 'undefined') %>;
         </script>
     </head>
     <body lang="<%= locale %>">
@@ -307,6 +309,10 @@ co2Sub = function(str) {
                                 <%- __('rankings-panel.country-ranking') %>
                             </div>
                             <div class="left-panel-toolbar-right-placeholder"></div>
+                        </div>
+
+                        <div class="country-search-bar">
+                            <input placeholder="<%- __('rankings-panel.search') %>"></input>
                         </div>
 
                         <div class="country-picker-container">
